@@ -8,7 +8,6 @@ endif()
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(TEST_NAME async_test)
 set(MY_BEST_LIB ${PROJECT_NAME})
 
 add_subdirectory(src)

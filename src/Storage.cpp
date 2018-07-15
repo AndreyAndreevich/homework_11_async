@@ -6,10 +6,11 @@ Storage& Storage::Instance() {
   return instance;
 }
 
-const Storage::id& Storage::addHandler(const int& N) {
+Storage::id Storage::addHandler(const handler& handler_, const writers& writers_) {
   count++;
-  auto it = data.emplace_hint(data.end(),count,element(std::make_shared<Handler>(N),std::string{}));
-  return it->first;
+  data.emplace_hint(data.end(),count,
+    std::make_tuple(handler_,writers_,std::string{}));
+  return count;
 }
 
 Storage::element& Storage::getHandler(const id& id_) {
@@ -18,4 +19,9 @@ Storage::element& Storage::getHandler(const id& id_) {
 
 void Storage::removeHandler(const id& id_) {
   data.erase(id_);
+}
+
+void Storage::clear() {
+  data.clear();
+  count = 0;
 }

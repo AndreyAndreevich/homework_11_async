@@ -3,12 +3,14 @@
 
 #include "Handler.h"
 #include <map>
-#include <mutex>
+#include <vector>
 
 class Storage {
   using buffer = std::string;
   using id = int;
-  using element = std::pair<std::shared_ptr<Handler>,buffer>;
+  using handler = std::shared_ptr<Handler>;
+  using writers = std::vector<std::shared_ptr<Observer>>;
+  using element = std::tuple<handler,writers,buffer>;
   
   id count = 0;  
 
@@ -21,9 +23,10 @@ protected:
 
 public:
   static Storage& Instance();  
-  const id& addHandler(const int&);
+  id addHandler(const handler&, const writers&);
   element& getHandler(const id&);
   void removeHandler(const id&);
+  void clear();
 };
 
 #endif

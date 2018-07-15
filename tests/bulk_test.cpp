@@ -132,8 +132,7 @@ BOOST_AUTO_TEST_SUITE(test_bulk)
 
     BOOST_AUTO_TEST_CASE(example_4)
     {
-        std::stringbuf out_buffer;
-        std::ostream out_stream(&out_buffer);
+        std::stringstream out_stream;
 
         auto handler = std::make_shared<Handler>(4);
         auto consoleWriter = std::shared_ptr<ConsoleWriter>(new ConsoleWriter(out_stream));
@@ -157,7 +156,7 @@ BOOST_AUTO_TEST_SUITE(test_bulk)
         string_stream << file.rdbuf();
         file.close();
 
-        BOOST_CHECK_EQUAL(out_buffer.str(),"bulk: cmd1, cmd2, cmd3\n");
+        BOOST_CHECK_EQUAL(out_stream.str(),"bulk: cmd1, cmd2, cmd3\n");
         BOOST_CHECK_EQUAL(string_stream.str(),"");
     }
 

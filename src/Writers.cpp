@@ -1,12 +1,13 @@
 #include "Writers.h"
 
 #include <iostream>
-
-ConsoleWriter::ConsoleWriter() {
-  out = &std::cout;
-}
+#include <thread>
   
 ConsoleWriter::ConsoleWriter(std::ostream& out_stream) {
+  setOutStream(out_stream);
+}
+
+void ConsoleWriter::setOutStream(std::ostream& out_stream) {
   out = &out_stream;
 }
 
@@ -27,7 +28,15 @@ void ConsoleWriter::print() {
 //---------------------------------------------------------------------------------
 
 FileWriter::FileWriter() {
+  id_count++;
+  id = id_count;
   file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+}
+
+int FileWriter::id_count = 0;
+
+void FileWriter::setNameList(const std::shared_ptr<std::vector<std::string>>& name_list_) {
+  name_list = name_list_;
 }
 
 void FileWriter::update(const std::weak_ptr<Commands>& commands) {
@@ -45,11 +54,14 @@ void FileWriter::update(const std::weak_ptr<Commands>& commands) {
       section = 0;
     }
     out_stream << "bulk_" << section << "_";
+    out_stream << id << "_";
     out_stream << current_time << ".log";
     name = out_buffer.str();
   }
   Observer::update(commands);
 } 
+
+#include <iostream>
 
 void FileWriter::print() {
   if (_commands.expired()) {
@@ -64,6 +76,9 @@ void FileWriter::print() {
     file << *command;
   }
   file.close();
+  if (name_list) {
+    name_list->push_back(name);
+  }
 }
 
 std::string FileWriter::getName() {
